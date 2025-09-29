@@ -1,0 +1,69 @@
+package eddlineales;
+
+
+public class Colas<T> {
+	
+	private NodoGenerico<T> inicio;
+	private NodoGenerico<T> fin;
+	private int tam;
+	
+	/**
+	 * constructor sin parametros para una cola
+	 */
+	public Colas() {
+		inicio = null;
+		fin = null;
+		tam = 0;
+	}
+	/**
+	 * Constructor con parametros para una cola
+	 * @param dato
+	 */
+	public Colas(T dato) {
+		inicio = new NodoGenerico<>(dato);
+		fin = inicio;
+		tam = 1;
+	}
+	/**
+	 * Agergamos un nuevo elemento al final de la cola
+	 * @param dato el dato a agregar a la cola
+	 */
+	public void enqueue(T dato) {
+		NodoGenerico<T> nuevo = new NodoGenerico<>(dato);
+		if(inicio==null) {
+			inicio = nuevo;
+			fin = nuevo;
+			tam++;
+		}else {
+			fin.setSiguiente(nuevo);
+			fin = fin.getSiguiente();
+			tam++;
+		}
+	}
+	/**
+	 * Obtenemos el primer elemento de la cola
+	 * @return la cadena que corresponde al primer elemento de la cola
+	 */
+	public T dequeue() {
+		if(inicio==null) {
+			return null;
+		}else {
+			NodoGenerico<T> aux = inicio;
+			inicio.getSiguiente();
+			aux.setSiguiente(null);
+			tam--;
+			return aux.getDato();
+		}
+	}
+	
+	public T peek() {
+		return inicio.getDato();
+	}
+	public int sizeOf() {
+		return tam;
+	}
+	public boolean isEmpty() {
+		return inicio==null;
+	}
+
+}
