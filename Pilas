@@ -1,0 +1,53 @@
+package eddlineales;
+
+public class Pilas<T> {
+	
+	private NodoGenerico<T> inicio;
+	private int tam;
+	
+	public Pilas() {
+		inicio = null;
+		tam = 0;
+	}
+	
+	public Pilas(T dato) {
+		inicio = new NodoGenerico<>(dato);
+		tam = 1;
+	}
+	
+	public void push(T dato) {
+		if(inicio == null) {
+			NodoGenerico<T> nuevo = new NodoGenerico<>(dato);
+			inicio = nuevo;
+			tam++;
+		}
+		NodoGenerico<T> nuevo = new NodoGenerico<>(dato);
+		nuevo.setSiguiente(inicio);
+		inicio = nuevo;
+		tam++;
+	}
+	
+	public T pop() {
+		if(inicio == null) {
+			return null;
+		}
+		NodoGenerico<T> aux = inicio;
+		inicio.getSiguiente();
+		aux.setSiguiente(null);
+		tam--;
+		return aux.getDato();
+	}
+	
+	public T peek() {
+		return null;
+	}
+	
+	public boolean isEmpty() {
+		return tam == 0;
+	}
+	
+	public int size() {
+		return tam;
+	}
+
+}
