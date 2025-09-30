@@ -1,25 +1,17 @@
 package uso;
 
-import eddlineales.Lista; // Tu implementación de Lista
+import eddlineales.Lista;
 import spp.Producto;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Scanner; // Permitido para la interacción del menú
+import java.util.Scanner;
 
-/**
- * Clase para gestionar el inventario de productos.
- * Utiliza una "lista de listas" (similar a Bucket Sort) donde cada categoría
- * tiene su propia lista de productos, y cada lista de productos está ordenada por SKU.
- */
 public class GestionProductos {
 
-    private Lista<String> categorias; // Lista de las categorías existentes
-    private Lista<Lista<Producto>> buckets; // Lista de listas, donde cada sub-lista es un "bucket" de productos por categoría
+    private Lista<String> categorias;
+    private Lista<Lista<Producto>> buckets;
 
-    /**
-     * Constructor por defecto. Inicializa las listas de categorías y buckets.
-     */
     public GestionProductos() {
         categorias = new Lista<>(); 
         buckets = new Lista<>();
@@ -31,7 +23,8 @@ public class GestionProductos {
      */
     public void cargarYOrganizar() {
         cargarProductos(); 
-        System.out.println("Inventario cargado y organizado. Total de categorías: " + categorias.getTam() + ", Total de productos: " + getTotalProductos() + ".");
+        System.out.println("Inventario cargado y organizado. 
+                           Total de categorías: " + categorias.getTam() + ", Total de productos: " + getTotalProductos() + ".");
     }
 
     /**
@@ -39,16 +32,11 @@ public class GestionProductos {
      * y agregarlos a la estructura de inventario.
      */
     private void cargarProductos() {
-        int totalProductosCargados = 0;
+        int totalProdC = 0;
         try (BufferedReader br = new BufferedReader(new FileReader("productos.txt"))) {
             String linea;
             while ((linea = br.readLine()) != null) {
-                linea = linea.trim(); // Elimina espacios en blanco al inicio y final
-                if (linea.isEmpty()) continue; // Ignora líneas vacías
-                
-                // El formato esperado es: SKU ; Nombre ; Categoria ; Precio ; Stock [; Vendidos]
-                String[] partes = linea.split(" ; ", -1); // Divide la línea por " ; "
-                
+                String[] partes = linea.split(" ; ", -1);
                 // Asegurarse de que haya al menos 5 partes (SKU, Nombre, Categoria, Precio, Stock)
                 if (partes.length >= 5) {
                     try {
@@ -57,13 +45,9 @@ public class GestionProductos {
                         String categoria = partes[2].trim();
                         double precio = Double.parseDouble(partes[3].trim());
                         int stock = Integer.parseInt(partes[4].trim());
-                        // La parte de "vendidos" es opcional, si existe, la parseamos
-                        int vendidos = (partes.length > 5) ? Integer.parseInt(partes[5].trim()) : 0;
-
                         Producto p = new Producto(sku, nombre, categoria, precio, stock);
-                        
-                        agregarProductoOrdenado(p); // Agrega el producto a su bucket correspondiente
-                        totalProductosCargados++;
+                        agregarProductoOrdenado(p);
+                        totalProdC++;
                     } catch (NumberFormatException e) {
                         System.err.println("Error de formato numérico en línea de producto: " + linea + ". Detalles: " + e.getMessage());
                     } catch (ArrayIndexOutOfBoundsException e) {
@@ -73,7 +57,7 @@ public class GestionProductos {
                     System.err.println("Línea de producto con formato incorrecto (menos de 5 partes): " + linea);
                 }
             }
-            System.out.println("Se cargaron " + totalProductosCargados + " productos en el inventario.");
+            System.out.println("Se cargaron " + totalProdC + " productos en el inventario.");
         } catch (IOException e) {
             System.err.println("Error al leer el archivo productos.txt: " + e.getMessage());
         }
@@ -85,72 +69,8 @@ public class GestionProductos {
      * Mantiene los productos ordenados por SKU dentro de cada lista de categoría.
      * @param p El producto a agregar.
      */
-    private void agregarProductoOrdenado(Producto p) {
-        String categoria = p.getCategoria();
-        // --- MODIFICACIÓN AQUÍ: Reemplazar indexOf con búsqueda manual ---
-        int indiceCategoria = -1;
-        for (int i = 0; i < categorias.getTam(); i++) {
-            if (categorias.obtener(i).equals(categoria)) {
-                indiceCategoria = i;
-                break;
-            }
-        }
-
-        Lista<Producto> bucket;
-        if (indiceCategoria == -1) { // Si la categoría no existe
-            categorias.agregar(categoria); // Agrega la nueva categoría a la lista de categorías
-            indiceCategoria = categorias.getTam() - 1; // El índice es el último
-            bucket = new Lista<>(); // Crea una nueva lista (bucket) para esta categoría
-            
-            // Asegura que la lista de buckets tenga un espacio para esta nueva categoría
-            if (indiceCategoria == buckets.getTam()) {
-                buckets.agregar(bucket);
-            } else {
-                buckets.insertar(indiceCategoria, bucket); 
-            }
-        } else { // Si la categoría ya existe
-            bucket = buckets.obtener(indiceCategoria); // Obtiene la lista (bucket) de esa categoría
-            if (bucket == null) { // En caso de que el bucket estuviera nulo por alguna razón
-                bucket = new Lista<>();
-                buckets.editar(indiceCategoria, bucket);
-            }
-        }
-
-        // Ahora, insertamos el producto en el bucket, manteniendo el orden por SKU
-        int pos = 0;
-        while (pos < bucket.getTam()) {
-            Producto actual = bucket.obtener(pos);
-            if (esSkuMayor(actual.getSku(), p.getSku())) { 
-                break; // Encontramos la posición correcta para insertar
-            }
-            pos++; // Avanza a la siguiente posición
-        }
-        bucket.insertar(pos, p); // Inserta el producto en la posición encontrada
-    }
-
-    /**
-     * Compara dos SKUs lexicográficamente (alfabéticamente) sin usar String.compareTo().
-     * Retorna true si sku1 es "mayor" que sku2 (es decir, sku1 debería ir después de sku2).
-     * @param sku1 El primer SKU a comparar.
-     * @param sku2 El segundo SKU a comparar.
-     * @return true si sku1 es lexicográficamente mayor que sku2, false en caso contrario.
-     */
-    private boolean esSkuMayor(String sku1, String sku2) {
-        int len1 = sku1.length();
-        int len2 = sku2.length();
-        int minLen = (len1 < len2) ? len1 : len2; 
-
-        for (int i = 0; i < minLen; i++) {
-            char char1 = sku1.charAt(i);
-            char char2 = sku2.charAt(i);
-            if (char1 > char2) { 
-                return true;
-            }
-            if (char1 < char2) { 
-                return false;
-            }
-        }
-        return len1 > len2;
+    public void insertar(int sku, String nombre){
+        
     }
 
     /**
@@ -271,3 +191,4 @@ public class GestionProductos {
         }
     }
 }
+
