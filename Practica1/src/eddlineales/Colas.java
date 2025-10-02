@@ -25,7 +25,7 @@ public class Colas<T> {
 		tam = 1;
 	}
 	/**
-	 * Agergamos un nuevo elemento al final de la cola
+	 * Agregamos un nuevo elemento al final de la cola
 	 * @param dato el dato a agregar a la cola
 	 */
 	public void enqueue(T dato) {
@@ -33,12 +33,11 @@ public class Colas<T> {
 		if(inicio==null) {
 			inicio = nuevo;
 			fin = nuevo;
-			tam++;
 		}else {
 			fin.setSiguiente(nuevo);
-			fin = fin.getSiguiente();
-			tam++;
+			fin = nuevo;
 		}
+		tam++;
 	}
 	/**
 	 * Obtenemos el primer elemento de la cola
@@ -49,21 +48,56 @@ public class Colas<T> {
 			return null;
 		}else {
 			NodoGenerico<T> aux = inicio;
-			inicio.getSiguiente();
+			inicio = inicio.getSiguiente();
 			aux.setSiguiente(null);
 			tam--;
+			if(inicio == null) {
+				fin = null;
+			}
 			return aux.getDato();
 		}
 	}
-	
+	/**
+	 * Metodo que devuelve el valor del primer elemento de la cola 
+	 * sin eliminarlo
+	 * @return el primer dato
+	 */
 	public T peek() {
+		if(inicio == null) {
+			return null;
+		}
 		return inicio.getDato();
 	}
+	
+	/**
+	 * Devuelve el tamano que ocupa el dato
+	 * @return el dato
+	 */
 	public int sizeOf() {
 		return tam;
 	}
+	
+	/**
+	 * Metodo que devuelve el dato 
+	 * indica si la cola no contiene ningún elemento
+	 * @return
+	 */
 	public boolean isEmpty() {
 		return inicio==null;
+	}
+	
+	public T buscar(String idBuscado) {
+		NodoGenerico<T> actual = inicio;
+		while(actual != null) {
+			if(actual.getDato() instanceof spp.Pedido) {
+				spp.Pedido pedido = (spp.Pedido) actual.getDato();
+				if(pedido.getIdPedido() == idBuscado) {
+					return actual.getDato();
+				}
+			}
+			actual = actual.getSiguiente();
+		}
+		return null;
 	}
 
 }

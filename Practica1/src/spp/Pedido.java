@@ -39,5 +39,55 @@ public class Pedido {
         }
         return res;
     }
+    
+    //se modifico y se agrego
+
+	public String getIdPedido() {
+		return idPedido;
+	}
+
+	public void setIdPedido(String idPedido) {
+		this.idPedido = idPedido;
+	}
+
+	public String getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(String cliente) {
+		this.cliente = cliente;
+	}
+
+	public Date getFechaProcesamiento() {
+		return fechaProcesamiento;
+	}
+
+	public void setFechaProcesamiento(Date fechaProcesamiento) {
+		this.fechaProcesamiento = fechaProcesamiento;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public double getTotal() {
+		return total;
+	}
+
+	public void setTotal(double total) {
+		this.total = total;
+	}
+
+	public ListaGenerica<ItemPedido> getItems() {
+		return items;
+	}
+
+	public void setItems(ListaGenerica<ItemPedido> items) {
+		this.items = items;
+	}
 
 }

@@ -267,4 +267,37 @@ public class ListaGenerica<T> {
     }
     
     //a partir de aqui puedes agregar tu codigo
+    
+    /**
+     * Metodo para editar un dato en cierta posicion
+     * @return el dato que se edito
+     */
+    public void editar(int posicion, T nuevoDato) {
+    	if(posicion < 0 || posicion >= tamano()) {
+    		throw new IndexOutOfBoundsException("Posicion invalida para editar: " + posicion);
+    	}
+    	NodoGenerico<T> actual = cabeza;
+    	for(int i = 0; i < posicion; i++) {
+    		actual = actual.getSiguiente();
+    	}
+    	actual.setDato(nuevoDato);
+    }
+    
+    /**
+     * Obtiene el indice de un elemento en la lista
+     * @param datoB el dato cuyo i se quiere obtener
+     * @return el i del dato
+     */
+    public int obtenerIndice(T datoB) {
+    	NodoGenerico<T> actual = cabeza;
+    	int i = 0;
+    	while(actual != null) {
+    		if(actual.getDato() == datoB) {
+    			return i;
+    		}
+    		actual = actual.getSiguiente();
+    		i++;
+    	}
+    	return -1;
+    }
 }
