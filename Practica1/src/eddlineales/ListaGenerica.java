@@ -292,7 +292,7 @@ public class ListaGenerica<T> {
     	NodoGenerico<T> actual = cabeza;
     	int i = 0;
     	while(actual != null) {
-    		if(actual.getDato() == datoB) {
+    		if (actual.getDato() != null && actual.getDato().equals(datoB)) {
     			return i;
     		}
     		actual = actual.getSiguiente();

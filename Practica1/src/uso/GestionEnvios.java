@@ -2,18 +2,19 @@ package uso;
 
 import eddlineales.Pilas;
 import spp.Pedido;
-import java.util.Scanner;
 
 
 public class GestionEnvios {
 
     private Pilas<Pedido> pilaPedidosParaEnvio;
+    private int contEnvios = 0;
 
     /**
      * Constructor de la clase
      */
     public GestionEnvios() {
         this.pilaPedidosParaEnvio = new Pilas<>();
+        this.contEnvios = 0;
     }
 
     /**
@@ -37,8 +38,9 @@ public class GestionEnvios {
             if (pedidoAEnviar == null) continue;
 
             pedidoAEnviar.setEstado("ENVIADO"); // Cambia el estado del pedido
+            contEnvios++;
             enviosProcesados++;
-            String guiaEnvio = pedidoAEnviar.getIdPedido() + "-" + enviosProcesados + "-G" + String.format("%06d", enviosProcesados);
+            String guiaEnvio = pedidoAEnviar.getIdPedido() + "-" + enviosProcesados + "-G" + String.format("%06d", contEnvios);
             
             System.out.println("Pedido " + pedidoAEnviar.getIdPedido() + " enviado. Guia de envío generada: " + guiaEnvio);
         }
@@ -53,10 +55,12 @@ public class GestionEnvios {
         System.out.println("Pedidos listos para ser enviados: " + pilaPedidosParaEnvio.size());
         if (pilaPedidosParaEnvio.isEmpty()) {
             System.out.println("En estos momentos no hay pedidos pendientes");
-        } 
+            return;
+        }
     }
 
     public int getPedidosEnPilaParaEnvio() {
         return pilaPedidosParaEnvio.size();
     }
+    
 }

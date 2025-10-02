@@ -1,28 +1,20 @@
 package eddlineales;
 
+import spp.Pedido;
 
 public class Colas<T> {
 	
-	private NodoGenerico<T> inicio;
+	private NodoGenerico<T> frente;
 	private NodoGenerico<T> fin;
-	private int tam;
+	private int tamano;
 	
 	/**
 	 * constructor sin parametros para una cola
 	 */
 	public Colas() {
-		inicio = null;
+		frente = null;
 		fin = null;
-		tam = 0;
-	}
-	/**
-	 * Constructor con parametros para una cola
-	 * @param dato
-	 */
-	public Colas(T dato) {
-		inicio = new NodoGenerico<>(dato);
-		fin = inicio;
-		tam = 1;
+		tamano = 0;
 	}
 	/**
 	 * Agregamos un nuevo elemento al final de la cola
@@ -30,32 +22,30 @@ public class Colas<T> {
 	 */
 	public void enqueue(T dato) {
 		NodoGenerico<T> nuevo = new NodoGenerico<>(dato);
-		if(inicio==null) {
-			inicio = nuevo;
+		if(isEmpty()) {
+			frente = nuevo;
 			fin = nuevo;
 		}else {
 			fin.setSiguiente(nuevo);
 			fin = nuevo;
 		}
-		tam++;
+		tamano++;
 	}
 	/**
 	 * Obtenemos el primer elemento de la cola
 	 * @return la cadena que corresponde al primer elemento de la cola
 	 */
 	public T dequeue() {
-		if(inicio==null) {
+		if(isEmpty()) {
 			return null;
-		}else {
-			NodoGenerico<T> aux = inicio;
-			inicio = inicio.getSiguiente();
-			aux.setSiguiente(null);
-			tam--;
-			if(inicio == null) {
-				fin = null;
-			}
-			return aux.getDato();
 		}
+		T dato = frente.getDato();
+		frente = frente.getSiguiente();
+		if(frente == null) {
+			fin = null;
+		}
+		tamano--;
+		return dato;
 	}
 	/**
 	 * Metodo que devuelve el valor del primer elemento de la cola 
@@ -63,18 +53,18 @@ public class Colas<T> {
 	 * @return el primer dato
 	 */
 	public T peek() {
-		if(inicio == null) {
+		if(isEmpty()) {
 			return null;
 		}
-		return inicio.getDato();
+		return frente.getDato();
 	}
 	
 	/**
 	 * Devuelve el tamano que ocupa el dato
 	 * @return el dato
 	 */
-	public int sizeOf() {
-		return tam;
+	public int getTamano() {
+		return tamano;
 	}
 	
 	/**
@@ -83,21 +73,28 @@ public class Colas<T> {
 	 * @return
 	 */
 	public boolean isEmpty() {
-		return inicio==null;
+		return frente == null;
 	}
 	
-	public T buscar(String idBuscado) {
-		NodoGenerico<T> actual = inicio;
+	public int sizeOf() { 
+		return getTamano();
+	}
+	
+	public Pedido buscarPorId(String id) {
+		NodoGenerico<T> actual = frente;
 		while(actual != null) {
-			if(actual.getDato() instanceof spp.Pedido) {
-				spp.Pedido pedido = (spp.Pedido) actual.getDato();
-				if(pedido.getIdPedido() == idBuscado) {
-					return actual.getDato();
+			if(actual.getDato() instanceof Pedido) {
+				Pedido p = (Pedido) actual.getDato();
+				if(p.getIdPedido().equals(id)) { 
+					return p;
 				}
 			}
 			actual = actual.getSiguiente();
 		}
 		return null;
 	}
-
+	public Pedido buscar(String id) {
+		return buscarPorId(id);
+	}
 }
+

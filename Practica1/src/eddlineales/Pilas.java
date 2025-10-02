@@ -1,26 +1,20 @@
 package eddlineales;
 
+import spp.Pedido;
+
 public class Pilas<T> {
 	
-	private NodoGenerico<T> inicio;
-	private int tam;
+	private NodoGenerico<T> cima;
+	private int tamano;
 	
 	/**
 	 * Constructor vacio para una pila
 	 */
 	public Pilas() {
-		inicio = null;
-		tam = 0;
+		cima = null;
+		tamano = 0;
 	}
-	
-	/**
-	 * Constructor con parametros para una pila
-	 * @param dato
-	 */
-	public Pilas(T dato) {
-		inicio = new NodoGenerico<>(dato);
-		tam = 1;
-	}
+
 	/**
 	 * Metodo que agrega un nuevo elemento a la pila
 	 * (cima) de la estructura
@@ -28,11 +22,9 @@ public class Pilas<T> {
 	 */
 	public void push(T dato) {
 		NodoGenerico<T> nuevo = new NodoGenerico<>(dato);
-		if(inicio != null) {
-			nuevo.setSiguiente(inicio);
-		}
-		inicio = nuevo;
-		tam++;
+		nuevo.setSiguiente(cima);
+		cima = nuevo;
+		tamano++;
 	}
 	
 	/**
@@ -41,14 +33,13 @@ public class Pilas<T> {
 	 * @return el dato eliminado
 	 */
 	public T pop() {
-		if(inicio == null) {
+		if(isEmpty()) {
 			return null;
 		}
-		NodoGenerico<T> aux = inicio;
-		inicio.getSiguiente();
-		aux.setSiguiente(null);
-		tam--;
-		return aux.getDato();
+		T dato = cima.getDato();
+		cima = cima.getSiguiente();
+		tamano--;
+		return dato;
 	}
 	
 	/**
@@ -57,10 +48,10 @@ public class Pilas<T> {
 	 * @return el dato superior de la lista sin eliminarlo
 	 */
 	public T peek() {
-		if(inicio == null) {
+		if(isEmpty()) {
 			return null;
 		}
-		return inicio.getDato();
+		return cima.getDato();
 	}
 	
 	/**
@@ -69,7 +60,7 @@ public class Pilas<T> {
 	 * @return
 	 */
 	public boolean isEmpty() {
-		return tam == 0;
+		return cima == null;
 	}
 	
 	/**
@@ -77,7 +68,20 @@ public class Pilas<T> {
 	 * @return el dato
 	 */
 	public int size() {
-		return tam;
+		return tamano;
 	}
-
+	
+	public Pedido buscarPorId(String id) {
+		NodoGenerico<T> actual = cima;
+		while(actual != null) {
+			if(actual.getDato() instanceof Pedido) {
+				Pedido p = (Pedido) actual.getDato();
+				if(p.getIdPedido().equals(id)) {
+					return p;
+				}
+			}
+			actual = actual.getSiguiente();
+		}
+		return null;
+	}
 }

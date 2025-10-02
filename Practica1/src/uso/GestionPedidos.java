@@ -13,6 +13,12 @@ public class GestionPedidos {
     private int totalPedidosProce = 0;
     private double valorTotalVendido = 0.0;
     
+    public GestionPedidos() {
+    	this.pedidosRecientes = new Colas<>();
+    	this.gestionProductos = null;
+    	this.gestionEnvios = null;
+    }
+    
 	public GestionPedidos(GestionProductos gestionProductos, GestionEnvios gestionEnvios) {
 		this.pedidosRecientes = new Colas<>();
 		this.gestionProductos = gestionProductos;
@@ -31,41 +37,46 @@ public class GestionPedidos {
     			linea = linea.trim();
     			if(linea.isEmpty()) continue;
     			
-    			String[] partes = linea.split(" ; ", 2);//divide en cliente y la cadena de items
-    			if(partes.length < 2) {
+    			String[] partes = linea.split(" ; ", -1);//divide en cliente y la cadena de items
+    			if(partes.length < 4) {
     				System.err.println("Error. Formato de linea de pedido invalido en pedidos.txt");
     				continue;
     			}
     			
-    			String cliente = partes[0].trim();
-                String itemsStr = partes[1].trim();
+    			String idPedido = partes[0].trim();
+    			String cliente = partes[1].trim();
+    			String estado = partes[2].trim();
+                String itemsStr = partes[3].trim();
                 
                 Pedido nuevoPedido = new Pedido(cliente); //crea un nuevo pedido
-                String[] itemsArray = itemsStr.split(" \\| "); //divide la cadena de items por " | "
+                nuevoPedido.setIdPedido(idPedido);
+                nuevoPedido.setEstado(estado);
+                String[] itemsArray = itemsStr.split("\\s*\\|\\s*"); //divide la cadena de items por " | "
                 for (String item : itemsArray) {
-                	String[] itemPartes = item.trim().split(" "); //divide cada item en sku y cantidad
-                    if (itemPartes.length == 2) {
-                    	try {
-                    		String sku = itemPartes[0].trim();
+                	item = item.trim();
+                	if(item.isEmpty())
+                		continue;
+                	String[] itemPartes = item.split("\\s+");
+                	if (itemPartes.length == 2) {
+                		try {
+                			String sku = itemPartes[0].trim();
                             int cantidad = Integer.parseInt(itemPartes[1].trim());
-                            //Para la carga inicial, se crea un Producto "d" con el sku y cantidad
-                            //el precio y stock se manejaran en la clase GestionProductos cuando se procese el pedido
                             Producto dProd = new Producto(sku, "Producto Desconocido", "N/A", 0.0, 0);
                             nuevoPedido.agregarItem(dProd, cantidad);
-                    	}catch (NumberFormatException e) {
-                    		System.err.println("Error de formato numerico en cantidad de item: '" + item + "' en linea: " + linea);
+                		}catch (NumberFormatException e) {
+                			System.err.println("Error de formato numerico en cantidad de item: '" + item + "' en linea: " + linea);
 						}
-                    }else {
-                    	System.err.println("Error: Formato de Item de pedido invalido: '" + item + "' en linea: " + linea);
-                    }
+                	}else {
+                		System.err.println("Error: Formato de Item de pedido invalido (se esperan 'SKU cantidad'): '" + item + "' en linea: " + linea);
+                	}
 
                 }
                 pedidosRecientes.enqueue(nuevoPedido); //encola el pedido recien creado
                 totalPedidosCargados++;
     		}
-    		System.out.println("Se cargaron " + totalPedidosCargados + " pedids iniciales a la cola de recientes");
+    		System.out.println("Se cargaron " + totalPedidosCargados + " pedidos iniciales a la cola de recientes");
     	}catch (IOException e) {
-			System.err.println("Error al leer el archivo pedidos.txt");
+			System.err.println("Error al leer el archivo pedidos.txt" + e.getMessage());
 		}
     }
     
@@ -138,6 +149,14 @@ public class GestionPedidos {
     
     public int getPedidosPendientes() {
     	return pedidosRecientes.sizeOf();
+    }
+    
+    public void setGestionProductos(GestionProductos gestionProductos) {
+        this.gestionProductos = gestionProductos;
+    }
+    
+    public void setGestionEnvios(GestionEnvios gestionEnvios) {
+        this.gestionEnvios = gestionEnvios;
     }
 
 }

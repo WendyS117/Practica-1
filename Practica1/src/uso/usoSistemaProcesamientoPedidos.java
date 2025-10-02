@@ -11,6 +11,9 @@ public class usoSistemaProcesamientoPedidos {
 		GestionEnvios gestionEnvios = new GestionEnvios();
 		GestionPedidos gestionPedidos = new GestionPedidos(gestionProductos, gestionEnvios);
 		
+		gestionProductos.setGestionEnvios(gestionEnvios);
+		gestionProductos.setGestionPedidos(gestionPedidos);
+		
 		int menuPrincipal;
 		
 		do {
@@ -19,7 +22,7 @@ public class usoSistemaProcesamientoPedidos {
 			System.out.println("2. Procesamiento de pedidos");
 			System.out.println("3. Sistema de envios");
 			System.out.println("4. Salir");
-			System.out.println("Seleccione una opcion: ");
+			System.out.print("Seleccione una opcion: ");
 			
 			menuPrincipal = leer(scanner);
 			
@@ -32,7 +35,7 @@ public class usoSistemaProcesamientoPedidos {
 					System.out.println("2. Buscar productos por categoria");
 					System.out.println("3. Generar reporte de inventario");
 					System.out.println("4. Volver al menu principal");
-					System.out.println("Seleccione una opcion: ");
+					System.out.print("Seleccione una opcion: ");
 					
 					productos = leer(scanner);
 					
@@ -53,7 +56,7 @@ public class usoSistemaProcesamientoPedidos {
 					default:
 						System.out.println("Opcion invalida.");
 					}
-				}while(productos != 0);
+				}while(productos != 4);
 				break;
 				
 			case 2:
@@ -65,7 +68,7 @@ public class usoSistemaProcesamientoPedidos {
 					System.out.println("3. Buscar pedido por ID");
 					System.out.println("4. Ver cantidad de pedidos pendientes");
 					System.out.println("5. Volver al menu principal");
-					System.out.println("Seleccione una opcion: ");
+					System.out.print("Seleccione una opcion: ");
 					pedidos = leer(scanner);
 					
 					switch (pedidos) {
@@ -76,7 +79,7 @@ public class usoSistemaProcesamientoPedidos {
 						gestionPedidos.procesarPedidos(6500);
 						break;
 					case 3:
-						System.out.println("Ingrese el ID del pedido que se quiera buscar: ");
+						System.out.print("Ingrese el ID del pedido que se quiera buscar: ");
 						String idPedido = scanner.nextLine().trim();
 						gestionPedidos.buscarPedido(idPedido);
 						break;
@@ -88,7 +91,7 @@ public class usoSistemaProcesamientoPedidos {
 					default:
 						System.out.println("Opcion invalida.");
 					}
-				}while(pedidos != 0);
+				}while(pedidos != 5);
 				break;
 				
 			case 3:
@@ -98,7 +101,7 @@ public class usoSistemaProcesamientoPedidos {
 					System.out.println("1. Procesar envios pendientes");
 					System.out.println("2. Generar reporte de envios pendientes");
 					System.out.println("3. Volver al menu principal");
-					System.out.println("Seleccione una opcion: ");
+					System.out.print("Seleccione una opcion: ");
 					envios = leer(scanner);
 					
 					switch(envios) {
@@ -113,7 +116,7 @@ public class usoSistemaProcesamientoPedidos {
 					default:
 						System.out.println("Opcion invalida");
 					}
-				}while(envios != 0);
+				}while(envios != 3);
 				break;
 				
 			case 4:
@@ -122,8 +125,9 @@ public class usoSistemaProcesamientoPedidos {
 			default:
 				System.out.println("Opcion invalida");
 			}
-		}while(menuPrincipal != 0);
+		}while(menuPrincipal != 4);
 		scanner.close();
+		System.out.println("Se ha salido del sistema.");
 
 	}
 	

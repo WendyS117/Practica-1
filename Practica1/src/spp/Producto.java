@@ -59,5 +59,13 @@ public class Producto {
 	public String toSaveString() {
 		return String.format("%s ; %s ; %s ; %.2f ; %d ; %d", sku, nombre, categoria, precio, stock, vendidos);
 	}
-    
+	
+	//se agrego
+	
+
+	public void setVendidos(int vendidos) {
+		this.vendidos = vendidos;
+	}
+	
+
 }
